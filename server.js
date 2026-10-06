@@ -6,7 +6,8 @@ const http = require("http");
 const fs = require("fs");
 const path = require("path");
 process.env.ORDERS_LOG = process.env.ORDERS_LOG || path.join(__dirname, "orders.jsonl");
-const { getCatalog, placeOrder, orderStatus, payReady } = require("./lib/core");
+const zlib = require("zlib");
+const { getCatalog, catalogBody, placeOrder, orderStatus } = require("./lib/core");
 const payme = require("./lib/payme");
 const click = require("./lib/click");
 
@@ -17,6 +18,13 @@ const TYPES = { ".html": "text/html; charset=utf-8", ".js": "text/javascript", "
 function send(res, code, body, type) {
   res.writeHead(code, { "Content-Type": type || "application/json; charset=utf-8", "Cache-Control": "no-store" });
   res.end(type ? body : JSON.stringify(body));
+}
+/* JSON со сжатием (на Vercel сжимает сама платформа) */
+function sendGzip(req, res, body) {
+  const buf = Buffer.from(JSON.stringify(body));
+  if (!/\bgzip\b/.test(req.headers["accept-encoding"] || "")) return send(res, 200, body);
+  res.writeHead(200, { "Content-Type": "application/json; charset=utf-8", "Content-Encoding": "gzip", "Cache-Control": "no-store" });
+  res.end(zlib.gzipSync(buf));
 }
 function readBody(req) {
   return new Promise((ok, fail) => {
@@ -31,7 +39,7 @@ const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, "http://x");
   try {
     if (url.pathname === "/api/catalog" && req.method === "GET") {
-      try { return send(res, 200, { ...(await getCatalog()), pay: { payme: payReady("payme"), click: payReady("click") } }); } catch { return send(res, 503, { error: "catalog" }); }
+      try { return sendGzip(req, res, await catalogBody(url.searchParams.get("limit"))); } catch { return send(res, 503, { error: "catalog" }); }
     }
     if (url.pathname === "/api/order" && req.method === "GET") {
       const [code, out] = await orderStatus(url.searchParams.get("no") || "", url.searchParams.get("key") || "");

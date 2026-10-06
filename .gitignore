@@ -2,3 +2,4 @@
 node_modules/
 orders.jsonl
 .vercel
+.cache/
