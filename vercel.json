@@ -1,6 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "outputDirectory": "public",
+  "regions": ["fra1"],
   "functions": {
     "api/catalog.js": { "maxDuration": 300 },
     "api/order.js": { "maxDuration": 60 }

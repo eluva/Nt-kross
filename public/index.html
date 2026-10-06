@@ -115,6 +115,7 @@
   .pill.just{animation:tap .3s}
   .ghead{display:flex;align-items:center;gap:8px}
   .ghead .disp{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .more{display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
   .sortsel{margin-left:auto;flex-shrink:0;display:flex;align-items:center;gap:6px;height:34px;padding:0 10px;border-radius:11px;background:var(--s1);border:1px solid var(--line);font-size:13px;font-weight:600;color:var(--muted)}
   .sortsel select{appearance:none;-webkit-appearance:none;border:none;background:transparent;outline:none;color:var(--text);font-weight:700;cursor:pointer}
   .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 12px}
@@ -337,17 +338,17 @@ var STR = {
       bHit:"Хит",bNew:"Новинка",last:"Последняя пара",soldN:function(n){ return "За месяц купили "+ruN(n,"пару","пары","пар"); },save:"Выгода",similar:"Похожие модели",legend:"последняя пара размера",
       store:"Магазин",storeTag:"Магазин кроссовок в Ташкенте",city:"Ташкент",addrL:"Адрес",landmark:"Ориентир",hours:"Часы работы",yandex:"Яндекс Карты",google:"Google Maps",findMap:"Найти на карте",route:"Как добраться",
       wModels:function(n){ return ruN(n,"модель","модели","моделей").replace(/^\d+ /,"")+" в наличии"; },wBrands:function(n){ return ruN(n,"бренд","бренда","брендов").replace(/^\d+ /,""); },wPairs:function(n){ return ruN(n,"пара","пары","пар").replace(/^\d+ /,"")+" на складе"; },
-      sort:"Сортировка",sNew:"Новые",sPop:"Популярные",sCheap:"Дешевле",sExp:"Дороже",allModels:"Все модели",pickupAt:"Забрать в магазине",theme:"Сменить тему",payWays:"Наличные · Payme · Click",getL:"Получение",getV:"Самовывоз или доставка",clear:"Очистить"},
+      more:"догружаем…",sort:"Сортировка",sNew:"Новые",sPop:"Популярные",sCheap:"Дешевле",sExp:"Дороже",allModels:"Все модели",pickupAt:"Забрать в магазине",theme:"Сменить тему",payWays:"Наличные · Payme · Click",getL:"Получение",getV:"Самовывоз или доставка",clear:"Очистить"},
   uz:{tagline:"Toshkentda krossovkalar",search:"Qidiruv: model yoki brend",cash:"Naqd pul",all:"Hammasi",loading:"Katalog yuklanmoqda…",loadErr:"Katalogni yuklab bo'lmadi.",retry:"Qayta urinish",soldOut:"Ba'zi o'lchamlar sotilib bo'lgan — savat yangilandi.",nothing:"Hech narsa topilmadi",home:"Bosh sahifa",cart:"Savat",contact:"Yozish",back:"Orqaga",sizes:"Mavjud o'lchamlar",pay:"To'lov",phone:"Telefon",pickSize:"O'lchamni tanlang",add:"Savatga",added:"Qo'shildi",toCart:"Savatga →",size:"O'lcham",empty:"Savat bo'sh",emptySub:"Xit savdoni ko'ring — eng ommabop modellar o'sha yerda",toCatalog:"Katalogga o'tish",total:"Jami",pcs:"dona",checkout:"Buyurtma berish",name:"Ism",delivery:"Qabul qilish",pickup:"Olib ketish",deliv:"Yetkazib berish",address:"Yetkazish manzili",confirm:"Buyurtmani tasdiqlash",fillHint:"Ism va telefonni kiriting",done:"Buyurtma qabul qilindi",orderNo:"Buyurtma №",doneSub:"Menejer @"+MANAGER+" buyurtma va o'lchamni tasdiqlash uchun siz bilan bog'lanadi.",writeManager:"Menejerga yozish",backHome:"Bosh sahifa",sum:"so'm",sendManager:"Buyurtmani menejerga yuborish",copied:"Buyurtma matni nusxalandi — uni chatga joylang",awaitPay:"To'lov kutilmoqda",paySub:"Buyurtmani to'lang — to'lovdan so'ng u darhol menejerga yuboriladi. Agar juftlik oldinroq sotilib qolsa, pul yechilmaydi.",payBtn:"To'lash",paid:"Buyurtma to'landi",paidSub:"To'lov qabul qilindi. Menejer @"+MANAGER+" qabul qilish bo'yicha siz bilan bog'lanadi.",cancelled:"To'lov bekor qilindi",cancelSub:"Buyurtma to'lanmadi. Qaytadan rasmiylashtiring yoki menejerga yozing.",payOff:"Onlayn to'lov hozircha mavjud emas — naqd pulni tanlang.",sending:"Yuborilmoqda…",sendErr:"Buyurtmani yuborib bo'lmadi. Internetni tekshirib, qayta urinib ko'ring.",sent:"Buyurtma menejerga yuborildi",
       hits:"Xit savdo",hitsSub:"So'nggi oyda eng ko'p sotilgan modellar",sale:"Chegirmalar",saleTitle:function(n){ return "<b>−"+n+"%</b> gacha<br>chegirma"; },saleSub:function(n){ return n+" ta model arzon narxda"; },
       fresh:"Yangiliklar",freshTitle:"Yangi kelganlar",freshSub:"So'nggi ikki haftadagi yangi juftliklar",storeTitle:"Toshkentdagi do'kon",storeSub:"Olib ketish · naqd, Payme, Click",see:"Ko'rish",
       bHit:"Xit",bNew:"Yangi",last:"Oxirgi juftlik",soldN:function(n){ return "Oxirgi oyda "+n+" juft sotib olindi"; },save:"Foyda",similar:"O'xshash modellar",legend:"o'lchamning oxirgi juftligi",
       store:"Do'kon",storeTag:"Toshkentdagi krossovka do'koni",city:"Toshkent",addrL:"Manzil",landmark:"Mo'ljal",hours:"Ish vaqti",yandex:"Yandex Xaritalar",google:"Google Maps",findMap:"Xaritada topish",route:"Qanday borish mumkin",
       wModels:function(){ return "ta model mavjud"; },wBrands:function(){ return "ta brend"; },wPairs:function(){ return "juft omborda"; },
-      sort:"Saralash",sNew:"Yangi",sPop:"Ommabop",sCheap:"Arzonroq",sExp:"Qimmatroq",allModels:"Barcha modellar",pickupAt:"Do'kondan olib ketish",theme:"Mavzuni almashtirish",payWays:"Naqd · Payme · Click",getL:"Qabul qilish",getV:"Olib ketish yoki yetkazib berish",clear:"Tozalash"}
+      more:"yuklanmoqda…",sort:"Saralash",sNew:"Yangi",sPop:"Ommabop",sCheap:"Arzonroq",sExp:"Qimmatroq",allModels:"Barcha modellar",pickupAt:"Do'kondan olib ketish",theme:"Mavzuni almashtirish",payWays:"Naqd · Payme · Click",getL:"Qabul qilish",getV:"Olib ketish yoki yetkazib berish",clear:"Tozalash"}
 };
 
-var S = { partial:false, total:0, screen:"home", lang:"ru", theme:"auto", cat:"all", sort:"new", q:"", limit:40, sel:null, size:null, gi:0, bi:0, loading:true, loadErr:false, added:false, cart:[],
+var S = { partial:false, incomplete:false, total:0, screen:"home", lang:"ru", theme:"auto", cat:"all", sort:"new", q:"", limit:40, sel:null, size:null, gi:0, bi:0, loading:true, loadErr:false, added:false, cart:[],
           delivery:"pickup", pay:"cash", payAvail:{}, name:"", phone:"", addr:"", order:null, sending:false, err:"", storeFrom:"home" };
 /* разовые флаги анимаций — сбрасываются после каждой отрисовки */
 var FX = {};
@@ -403,7 +404,7 @@ applyTheme(false);
 /* full — полный свежий каталог с сервера; кэш и первая порция корзину не трогают */
 function setCatalog(j, full){
   PRODUCTS = j.products||[]; byId = {}; PRODUCTS.forEach(function(p){ byId[p.id] = p; });
-  S.partial = !!j.partial; S.total = j.total || PRODUCTS.length;
+  S.partial = !!(j.partial || j.incomplete); S.incomplete = !!j.incomplete; S.total = j.total || PRODUCTS.length;
   S.payAvail=j.pay||{}; if(S.pay!=="cash" && !S.payAvail[S.pay]) S.pay="cash"; // онлайн-оплата только если подключена
   COL = S.partial ? {hit:[], sale:[], fresh:[]} : { // подборки — только по полному каталогу
     hit: PRODUCTS.filter(function(p){ return p.hit; }).sort(function(a,b){ return b.sold-a.sold; }),
@@ -426,16 +427,22 @@ function readCatCache(){
 }
 function writeCatCache(j){ setTimeout(function(){ try { localStorage.setItem(CAT_KEY, JSON.stringify({t:Date.now(), j:j})); } catch(e){} }, 0); }
 function getJSON(url){ return fetch(url).then(function(r){ if(!r.ok) throw new Error("HTTP "+r.status); return r.json(); }); }
+var catRetry;
 function loadCatalog(){
+  clearTimeout(catRetry);
   S.loadErr=false; S.loading=!PRODUCTS.length;
   /* на экране пусто — сначала первые 40 моделей (маленький ответ), потом весь каталог */
   var first = PRODUCTS.length ? Promise.resolve() : getJSON(API+"/api/catalog?limit=40").then(function(j){
     if(PRODUCTS.length) return;
-    setCatalog(j, !j.partial); S.loading=false; FX.stag=true; render(); hideSplash();
+    setCatalog(j, !j.partial && !j.incomplete); S.loading=false; FX.stag=true; render(); hideSplash();
   }, function(){});
   return first.then(function(){ return getJSON(API+"/api/catalog"); }).then(function(j){
+      /* сервер ещё собирает каталог: показываем готовое и спрашиваем снова; полный каталог из кэша не заменяем неполным */
+      if(j.incomplete) catRetry=setTimeout(loadCatalog, 5000);
+      if(j.incomplete && PRODUCTS.length && !S.partial) return;
       if(!PRODUCTS.length) FX.stag=true;
-      setCatalog(j, true); S.loading=false; writeCatCache(j);
+      setCatalog(j, !j.incomplete); S.loading=false;
+      if(!j.incomplete) writeCatCache(j);
     },
     function(){ S.loading=false; if(!PRODUCTS.length) S.loadErr=true; })
     .then(render);
@@ -540,7 +547,7 @@ function watchMore(){
   moreObs.observe(mark);
 }
 /* пока пришла только первая порция — показываем, сколько моделей всего */
-function countText(){ return !PRODUCTS.length ? "" : S.partial && S.cat==="all" && !S.q ? S.total : filtered().length; }
+function countText(){ return !PRODUCTS.length ? "" : S.partial && !S.incomplete && S.cat==="all" && !S.q ? S.total : filtered().length; }
 function gridTitle(){
   var t=L();
   return S.cat==="all" ? t.allModels : S.cat==="hit" ? t.hits : S.cat==="sale" ? t.sale : S.cat==="fresh" ? t.fresh : S.cat;
@@ -611,7 +618,7 @@ var screens = {
         (o && o.status==="pending" ? '<button class="scard pend" data-a="go" data-v="done"><span class="pdot"></span><span class="col" style="flex:1;gap:2px"><b style="font-size:14px">'+t.awaitPay+' · №'+esc(o.no)+'</b><span class="muted xs">'+fmt(o.total)+'</span></span>'+ico(I.chev,18)+'</button>' : '')+
         bannersHtml()+
         '<div id="gridTop"></div><div class="stick"><div class="chips" data-keep="chips">'+chips+'</div></div>'+
-        '<div class="ghead"><div class="disp">'+esc(gridTitle())+'</div><span id="gcount" class="muted xs">'+countText()+'</span>'+
+        '<div class="ghead"><div class="disp">'+esc(gridTitle())+'</div><span id="gcount" class="muted xs">'+countText()+'</span>'+(S.incomplete?'<span class="more muted" role="status" aria-label="'+t.more+'" title="'+t.more+'">'+ico('<path d="M21 12a9 9 0 1 1-9-9"/>',14,' class="spin"')+'</span>':'')+''+
           '<label class="sortsel">'+ico(I.sort,14)+'<select data-f="sort" aria-label="'+t.sort+'">'+sorts+'</select></label></div>'+
         '<div class="grid'+(FX.stag?" stag":"")+'" id="grid">'+gridHtml()+'</div><div id="more"></div>'+
         '<button class="scard" data-a="go" data-v="store" style="margin-top:8px">'+logo()+'<span class="col" style="flex:1;gap:2px;min-width:0"><b style="font-size:14px">NT Kross · '+t.city+'</b><span class="muted xs">'+esc(tr(SHOP.address)||t.route)+(tr(SHOP.hours)?' · '+esc(tr(SHOP.hours)):'')+'</span></span>'+ico(I.chev,18,' style="color:var(--muted)"')+'</button>'+
