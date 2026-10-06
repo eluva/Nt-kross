@@ -1,0 +1,13 @@
+{
+  "name": "nt-kross",
+  "version": "1.0.0",
+  "private": true,
+  "description": "NT Kross — Telegram мини-приложение с каталогом из BILLZ",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
