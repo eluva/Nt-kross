@@ -312,7 +312,7 @@ function buildOrder(){
   var ci=cartInfo();
   return {
     lang:S.lang,
-    items:ci.lines.map(function(l){ return {id:l.p.id,name:l.p.name,size:l.x.size,qty:l.x.qty,sum:l.price*l.x.qty}; }),
+    items:ci.lines.map(function(l){ return {id:l.p.id,bc:l.p.bc[l.x.size],name:l.p.name,size:l.x.size,qty:l.x.qty,sum:l.price*l.x.qty}; }),
     total:ci.total, name:S.name.trim(), phone:S.phone.trim(),
     delivery:S.delivery, addr:S.delivery==="deliv"?S.addr.trim():"", pay:S.pay,
     initData:tg?tg.initData||"":""
