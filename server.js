@@ -6,7 +6,9 @@ const http = require("http");
 const fs = require("fs");
 const path = require("path");
 process.env.ORDERS_LOG = process.env.ORDERS_LOG || path.join(__dirname, "orders.jsonl");
-const { getCatalog, placeOrder } = require("./lib/core");
+const { getCatalog, placeOrder, orderStatus, payReady } = require("./lib/core");
+const payme = require("./lib/payme");
+const click = require("./lib/click");
 
 const PORT = +process.env.PORT || 3000;
 const PUBLIC = path.join(__dirname, "public");
@@ -29,13 +31,25 @@ const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, "http://x");
   try {
     if (url.pathname === "/api/catalog" && req.method === "GET") {
-      try { return send(res, 200, await getCatalog()); } catch { return send(res, 503, { error: "catalog" }); }
+      try { return send(res, 200, { ...(await getCatalog()), pay: { payme: payReady("payme"), click: payReady("click") } }); } catch { return send(res, 503, { error: "catalog" }); }
+    }
+    if (url.pathname === "/api/order" && req.method === "GET") {
+      const [code, out] = await orderStatus(url.searchParams.get("no") || "", url.searchParams.get("key") || "");
+      return send(res, code, out);
     }
     if (url.pathname === "/api/order" && req.method === "POST") {
       let body;
       try { body = JSON.parse(await readBody(req)); } catch { return send(res, 400, { error: "json" }); }
       const [code, out] = await placeOrder(body || {}, req.socket.remoteAddress || "");
       return send(res, code, out);
+    }
+    if (url.pathname === "/api/payme" && req.method === "POST") {
+      let body = null;
+      try { body = JSON.parse(await readBody(req)); } catch {}
+      return send(res, 200, await payme.handle(body, req.headers.authorization || ""));
+    }
+    if (url.pathname === "/api/click" && req.method === "POST") {
+      return send(res, 200, await click.handle(Object.fromEntries(new URLSearchParams(await readBody(req)))));
     }
     if (req.method === "GET") {
       const rel = url.pathname === "/" ? "index.html" : decodeURIComponent(url.pathname.slice(1));
