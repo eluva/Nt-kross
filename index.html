@@ -32,7 +32,7 @@
   .search input{flex:1;border:none;outline:none;background:transparent;font-size:15px;min-width:0}
   .hero{display:flex;flex-direction:column;gap:10px;padding:18px;background:var(--accent);color:var(--ink);border-radius:20px}
   .tag{padding:5px 10px;background:var(--ink);color:var(--text);border-radius:999px;font-size:12px;font-weight:600}
-  .chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:0 16px}
+  .chips{display:flex;flex-shrink:0;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:0 16px}
   .chips::-webkit-scrollbar{display:none}
   .pill{flex-shrink:0}
   .pill{height:38px;padding:0 16px;border-radius:999px;border:1px solid var(--line);background:transparent;font-size:14px;font-weight:600}
@@ -65,7 +65,7 @@
   .qty button{width:36px;height:44px;border:none;background:transparent;font-size:20px}
   .qty button:disabled{opacity:.3;cursor:not-allowed}
   .field{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--muted)}
-  .field input{height:48px;padding:0 14px;border-radius:12px;border:1px solid var(--line);background:var(--s1);font-size:15px;outline:none}
+  .field input{color:var(--text);height:48px;padding:0 14px;border-radius:12px;border:1px solid var(--line);background:var(--s1);font-size:15px;outline:none}
   .field input:focus{border-color:var(--accent)}
   .seg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;padding:4px;background:var(--s1);border-radius:14px}
   .seg button{height:44px;border-radius:11px;border:none;background:transparent;font-size:14px;font-weight:600}
