@@ -5,5 +5,14 @@
   "functions": {
     "api/catalog.js": { "maxDuration": 300 },
     "api/order.js": { "maxDuration": 60 }
+  },
+  "images": {
+    "sizes": [640],
+    "qualities": [70],
+    "formats": ["image/webp"],
+    "minimumCacheTTL": 2678400,
+    "remotePatterns": [
+      { "protocol": "https", "hostname": "^fra1\\.digitaloceanspaces\\.com$", "pathname": "^/billz2-minio-billz/.*$" }
+    ]
   }
 }

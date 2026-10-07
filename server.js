@@ -1,5 +1,6 @@
 /* NT Kross — локальный сервер для разработки (на Vercel вместо него работают api/*.js).
-   Отдаёт public/ и те же /api/catalog и /api/order.
+   Отдаёт public/ и те же /api/catalog, /api/order и /api/staffbot.
+   STAFF_BOT_POLL=1 — бот сотрудников забирает сообщения сам (до localhost вебхук Telegram не дойдёт).
    Запуск: node server.js  (Node 18+, без зависимостей) */
 "use strict";
 const http = require("http");
@@ -7,9 +8,8 @@ const fs = require("fs");
 const path = require("path");
 process.env.ORDERS_LOG = process.env.ORDERS_LOG || path.join(__dirname, "orders.jsonl");
 const zlib = require("zlib");
-const { getCatalog, catalogBody, placeOrder, orderStatus } = require("./lib/core");
-const payme = require("./lib/payme");
-const click = require("./lib/click");
+const { getCatalog, catalogBody, placeOrder } = require("./lib/core");
+const staff = require("./lib/staff");
 
 const PORT = +process.env.PORT || 3000;
 const PUBLIC = path.join(__dirname, "public");
@@ -41,23 +41,22 @@ const server = http.createServer(async (req, res) => {
     if (url.pathname === "/api/catalog" && req.method === "GET") {
       try { return sendGzip(req, res, await catalogBody(url.searchParams.get("limit"))); } catch { return send(res, 503, { error: "catalog" }); }
     }
-    if (url.pathname === "/api/order" && req.method === "GET") {
-      const [code, out] = await orderStatus(url.searchParams.get("no") || "", url.searchParams.get("key") || "");
-      return send(res, code, out);
-    }
     if (url.pathname === "/api/order" && req.method === "POST") {
       let body;
       try { body = JSON.parse(await readBody(req)); } catch { return send(res, 400, { error: "json" }); }
       const [code, out] = await placeOrder(body || {}, req.socket.remoteAddress || "");
       return send(res, code, out);
     }
-    if (url.pathname === "/api/payme" && req.method === "POST") {
+    if (url.pathname === "/api/staffbot" && req.method === "POST") {
+      if (!staff.validSecret(req.headers["x-telegram-bot-api-secret-token"])) return send(res, 401, { error: "secret" });
       let body = null;
       try { body = JSON.parse(await readBody(req)); } catch {}
-      return send(res, 200, await payme.handle(body, req.headers.authorization || ""));
+      await staff.handle(body).catch(e => console.error("staffbot:", e.message));
+      return send(res, 200, { ok: true });
     }
-    if (url.pathname === "/api/click" && req.method === "POST") {
-      return send(res, 200, await click.handle(Object.fromEntries(new URLSearchParams(await readBody(req)))));
+    if (url.pathname === "/api/staffbot" && req.method === "GET") {
+      const [code, out] = await staff.setup(url.searchParams.get("setup") || "", process.env.APP_URL || "https://" + req.headers.host);
+      return send(res, code, out);
     }
     if (req.method === "GET") {
       const rel = url.pathname === "/" ? "index.html" : decodeURIComponent(url.pathname.slice(1));
@@ -74,3 +73,4 @@ const server = http.createServer(async (req, res) => {
 
 server.listen(PORT, () => console.log("NT Kross: http://localhost:" + PORT));
 getCatalog().catch(e => console.error("Каталог:", e.message)); // прогреваем каталог сразу
+if (process.env.STAFF_BOT_POLL === "1") staff.poll().catch(e => console.error("Бот сотрудников:", e.message));

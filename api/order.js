@@ -1,14 +1,9 @@
-/* Vercel: POST /api/order — оформить заказ (наличные → менеджеру; Payme/Click → ждёт оплаты)
-           GET  /api/order?no=…&key=… — статус заказа для приложения */
-const { placeOrder, orderStatus } = require("../lib/core");
+/* Vercel: POST /api/order — оформить заказ: сервер сверяет наличие с BILLZ и отправляет заказ менеджеру и сотрудникам */
+const { placeOrder } = require("../lib/core");
 
 module.exports = async (req, res) => {
   res.setHeader("Cache-Control", "no-store");
   try {
-    if (req.method === "GET") {
-      const [code, out] = await orderStatus(req.query.no || "", req.query.key || "");
-      return res.status(code).json(out);
-    }
     if (req.method !== "POST") return res.status(405).json({ error: "method" });
     let body = req.body;
     if (typeof body === "string") { try { body = JSON.parse(body); } catch { body = null; } }
