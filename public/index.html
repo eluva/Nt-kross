@@ -590,15 +590,16 @@ function updateGrid(){
 /* баннеры строятся из подборок BILLZ: хиты, скидки, новинки + магазин */
 function bannersHtml(){
   var t=L(), sl=[];
-  function pics(list){ var lazy=sl.length>0; return list.filter(function(p){ return p.imgs.length; }).slice(0,3).map(function(p,i){ return '<span class="bp bp'+i+'">'+img(p.imgs[0], p.name, lazy, true)+'</span>'; }).join(""); }
+  function pics(list){ var lazy=sl.length>1; return list.filter(function(p){ return p.imgs.length; }).slice(0,3).map(function(p,i){ return '<span class="bp bp'+i+'">'+img(p.imgs[0], p.name, lazy, true)+'</span>'; }).join(""); }
   function slide(cls, a, v, kick, title, sub, picHtml){
     return '<button class="bn '+cls+'" data-a="'+a+'" data-v="'+v+'"><div class="bn-txt"><span class="bn-k">'+kick+'</span><div class="disp bn-t">'+title+'</div><div class="bn-s">'+sub+'</div>'+
       '<span class="bn-c">'+t.see+ico(I.arrow,14)+'</span></div><div class="bn-pics">'+picHtml+'</div></button>';
   }
+  // магазин — первым слайдом при открытии; фото следующего слайда грузим сразу, остальные — лениво
+  sl.push(slide("bn-store","go","store","NT KROSS",t.storeTitle,t.storeSub,'<span class="bp bp-logo"><img src="logo.jpg" alt=""></span>'));
   if(COL.hit.length) sl.push(slide("bn-hit","col","hit",FLAME+"TOP "+COL.hit.length,t.hits,t.hitsSub,pics(COL.hit)));
   if(COL.sale.length) sl.push(slide("bn-sale","col","sale","SALE",t.saleTitle(COL.sale.reduce(function(a,p){ return Math.max(a,p.off); },0)),t.saleSub(COL.sale.length),pics(COL.sale)));
   if(COL.fresh.length) sl.push(slide("bn-new","col","fresh","NEW",t.freshTitle,t.freshSub,pics(COL.fresh)));
-  sl.push(slide("bn-store","go","store","NT KROSS",t.storeTitle,t.storeSub,'<span class="bp bp-logo"><img src="logo.jpg" alt=""></span>'));
   var bi=Math.min(S.bi, sl.length-1);
   return '<div class="banners" id="banners" data-keep="banners">'+sl.join("")+'</div>'+
     (sl.length>1?'<div class="dots" id="bdots">'+sl.map(function(_,i){ return '<i'+(i===bi?' class="on"':'')+'></i>'; }).join("")+'</div>':'');
