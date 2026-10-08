@@ -4,7 +4,8 @@
   "regions": ["fra1"],
   "functions": {
     "api/catalog.js": { "maxDuration": 300 },
-    "api/order.js": { "maxDuration": 60 }
+    "api/order.js": { "maxDuration": 60 },
+    "api/admin.js": { "maxDuration": 300 }
   },
   "images": {
     "sizes": [640],
@@ -12,7 +13,8 @@
     "formats": ["image/webp"],
     "minimumCacheTTL": 2678400,
     "remotePatterns": [
-      { "protocol": "https", "hostname": "^fra1\\.digitaloceanspaces\\.com$", "pathname": "^/billz2-minio-billz/.*$" }
+      { "protocol": "https", "hostname": "^fra1\\.digitaloceanspaces\\.com$", "pathname": "^/billz2-minio-billz/.*$" },
+      { "protocol": "https", "hostname": "^[a-z0-9]+\\.public\\.blob\\.vercel-storage\\.com$", "pathname": "^/ntkross/.*$" }
     ]
   }
 }

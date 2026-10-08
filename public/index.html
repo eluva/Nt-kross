@@ -320,8 +320,8 @@
 var PRODUCTS = [], byId = {}, COL = {hit:[], sale:[], fresh:[]};
 var MANAGER = "ntkross_admin";
 /* ===== Магазин в Ташкенте =====
-   Заполните адрес, ориентир и координаты — пустые поля в приложении не показываются.
-   Координаты: в Яндекс Картах нажмите на точку магазина и скопируйте «41.31, 69.27» (широта, долгота). */
+   Телефон, Telegram менеджера, адрес, ориентир, часы и координаты меняются в админке (/admin.html) и приходят с каталогом.
+   Здесь — только значения до первой загрузки. Пустые поля в приложении не показываются. */
 var SHOP = {
   phone: "+998 (91) 163-00-34",
   address: { ru:"", uz:"" },   // напр. { ru:"ул. Амира Темура, 15", uz:"Amir Temur ko'chasi, 15" }
@@ -337,18 +337,18 @@ var STORE_KEY = "ntkross:v1";
 
 function ruN(n, a, b, c){ var d=n%10, h=n%100; return n+" "+(d===1&&h!==11 ? a : d>=2&&d<=4&&(h<10||h>=20) ? b : c); }
 var STR = {
-  ru:{tagline:"Кроссовки в Ташкенте",search:"Поиск: модель или бренд",all:"Все",loading:"Загружаем каталог…",loadErr:"Не удалось загрузить каталог.",retry:"Повторить",soldOut:"Часть размеров уже продана — корзина обновлена.",nothing:"Ничего не найдено",home:"Главная",cart:"Корзина",contact:"Написать",back:"Назад",sizes:"Размеры в наличии",pay:"Оплата",phone:"Телефон",pickSize:"Выберите размер",add:"В корзину",added:"Добавлено",toCart:"В корзину →",size:"Размер",empty:"Корзина пуста",emptySub:"Загляните в хиты продаж — там самое популярное",toCatalog:"Перейти в каталог",total:"Итого",pcs:"шт.",checkout:"Оформить заказ",name:"Имя",confirm:"Подтвердить заказ",fillHint:"Укажите имя и телефон",fillAddr:"Укажите адрес доставки",fillRegion:"Выберите область",done:"Заказ принят",orderNo:"Заказ №",doneSub:"Менеджер @"+MANAGER+" свяжется с вами, чтобы подтвердить заказ и размер. Мы на связи ежедневно с 9:00 до 21:00.",writeManager:"Написать менеджеру",backHome:"На главную",sum:"сум",sendManager:"Отправить заказ менеджеру",copied:"Текст заказа скопирован — вставьте его в чат",sending:"Отправляем…",sendErr:"Не удалось отправить заказ. Проверьте интернет и попробуйте ещё раз.",sent:"Заказ отправлен менеджеру",
-      delivery:"Получение",pickup:"Самовывоз",pickupSub:"Из магазина в Ташкенте",deliv:"Доставка по Ташкенту",delivSub:"Ташкент, Чирчик, Ташкентская область",bts:"В регион через BTS",btsSub:"Доставка по Узбекистану",
-      zone:"Район",region:"Область",pickRegion:"Выберите область",address:"Адрес доставки",btsAddr:"Город и адрес или отделение BTS",redZone:"Красная зона — стоимость и сроки доставки уточнит менеджер.",btsNote:"Стоимость доставки и оплату менеджер обсудит с вами после заказа.",
+  ru:{tagline:"Кроссовки в Ташкенте",search:"Поиск: модель или бренд",all:"Все",loading:"Загружаем каталог…",loadErr:"Не удалось загрузить каталог.",retry:"Повторить",soldOut:"Часть размеров уже продана — корзина обновлена.",nothing:"Ничего не найдено",home:"Главная",cart:"Корзина",contact:"Написать",back:"Назад",sizes:"Размеры в наличии",pay:"Оплата",phone:"Телефон",pickSize:"Выберите размер",add:"В корзину",added:"Добавлено",toCart:"В корзину →",size:"Размер",empty:"Корзина пуста",emptySub:"Загляните в хиты продаж — там самое популярное",toCatalog:"Перейти в каталог",total:"Итого",pcs:"шт.",checkout:"Оформить заказ",name:"Имя",confirm:"Подтвердить заказ",fillHint:"Укажите имя и телефон",fillAddr:"Укажите адрес доставки",fillRegion:"Выберите область",done:"Заказ принят",orderNo:"Заказ №",doneSub:function(m, h){ return "Менеджер @"+m+" свяжется с вами, чтобы подтвердить заказ и размер."+(h?" Мы на связи: "+h.charAt(0).toLowerCase()+h.slice(1)+".":""); },writeManager:"Написать менеджеру",backHome:"На главную",sum:"сум",sendManager:"Отправить заказ менеджеру",copied:"Текст заказа скопирован — вставьте его в чат",sending:"Отправляем…",sendErr:"Не удалось отправить заказ. Проверьте интернет и попробуйте ещё раз.",sent:"Заказ отправлен менеджеру",
+      delivery:"Получение",pickup:"Самовывоз",pickupSub:"Из магазина в Ташкенте",deliv:"Доставка по Ташкенту",delivSub:"Только по городу",bts:"В регион через BTS",btsSub:"Доставка по Узбекистану",
+      region:"Область",pickRegion:"Выберите область",address:"Адрес доставки",btsAddr:"Город и адрес или отделение BTS",noDeliv:function(z){ return "Доставки нет: "+z+". Заберите заказ в магазине."; },btsNote:"Стоимость доставки и оплату менеджер обсудит с вами после заказа.",
       hits:"Хиты продаж",hitsSub:"Самые продаваемые модели за последний месяц",sale:"Скидки",saleTitle:function(n){ return "Скидки<br>до <b>−"+n+"%</b>"; },saleSub:function(n){ return ruN(n,"модель","модели","моделей")+" по сниженной цене"; },
       fresh:"Новинки",freshTitle:"Новые поступления",freshSub:"Свежие пары за последние две недели",storeTitle:"Магазин в Ташкенте",storeSub:"Самовывоз · доставка · BTS по регионам",see:"Смотреть",
       bHit:"Хит",bNew:"Новинка",last:"Последняя пара",soldN:function(n){ return "За месяц купили "+ruN(n,"пару","пары","пар"); },save:"Выгода",similar:"Похожие модели",legend:"последняя пара размера",
       store:"Магазин",storeTag:"Магазин кроссовок в Ташкенте",city:"Ташкент",addrL:"Адрес",landmark:"Ориентир",hours:"Часы работы",yandex:"Яндекс Карты",google:"Google Maps",findMap:"Найти на карте",route:"Как добраться",
       wModels:function(n){ return ruN(n,"модель","модели","моделей").replace(/^\d+ /,"")+" в наличии"; },wBrands:function(n){ return ruN(n,"бренд","бренда","брендов").replace(/^\d+ /,""); },
       more:"догружаем…",sort:"Сортировка",sNew:"Новые",sPop:"Популярные",allModels:"Все модели",pickupAt:"Забрать в магазине",theme:"Сменить тему",payWays:"При получении",payDeal:"По договорённости с менеджером",exch:"Обмен",exchV:"Обменяем размер или модель · деньги не возвращаются",getL:"Получение",getV:"Самовывоз, доставка по Ташкенту, BTS по регионам",clear:"Очистить"},
-  uz:{tagline:"Toshkentda krossovkalar",search:"Qidiruv: model yoki brend",all:"Hammasi",loading:"Katalog yuklanmoqda…",loadErr:"Katalogni yuklab bo'lmadi.",retry:"Qayta urinish",soldOut:"Ba'zi o'lchamlar sotilib bo'lgan — savat yangilandi.",nothing:"Hech narsa topilmadi",home:"Bosh sahifa",cart:"Savat",contact:"Yozish",back:"Orqaga",sizes:"Mavjud o'lchamlar",pay:"To'lov",phone:"Telefon",pickSize:"O'lchamni tanlang",add:"Savatga",added:"Qo'shildi",toCart:"Savatga →",size:"O'lcham",empty:"Savat bo'sh",emptySub:"Xit savdoni ko'ring — eng ommabop modellar o'sha yerda",toCatalog:"Katalogga o'tish",total:"Jami",pcs:"dona",checkout:"Buyurtma berish",name:"Ism",confirm:"Buyurtmani tasdiqlash",fillHint:"Ism va telefonni kiriting",fillAddr:"Yetkazish manzilini kiriting",fillRegion:"Viloyatni tanlang",done:"Buyurtma qabul qilindi",orderNo:"Buyurtma №",doneSub:"Menejer @"+MANAGER+" buyurtma va o'lchamni tasdiqlash uchun siz bilan bog'lanadi. Har kuni 9:00 dan 21:00 gacha aloqadamiz.",writeManager:"Menejerga yozish",backHome:"Bosh sahifa",sum:"so'm",sendManager:"Buyurtmani menejerga yuborish",copied:"Buyurtma matni nusxalandi — uni chatga joylang",sending:"Yuborilmoqda…",sendErr:"Buyurtmani yuborib bo'lmadi. Internetni tekshirib, qayta urinib ko'ring.",sent:"Buyurtma menejerga yuborildi",
-      delivery:"Qabul qilish",pickup:"Olib ketish",pickupSub:"Toshkentdagi do'kondan",deliv:"Toshkent bo'ylab yetkazish",delivSub:"Toshkent, Chirchiq, Toshkent viloyati",bts:"Viloyatga BTS orqali",btsSub:"O'zbekiston bo'ylab yetkazish",
-      zone:"Hudud",region:"Viloyat",pickRegion:"Viloyatni tanlang",address:"Yetkazish manzili",btsAddr:"Shahar va manzil yoki BTS bo'limi",redZone:"Qizil zona — yetkazish narxi va muddatini menejer aniqlashtiradi.",btsNote:"Yetkazish narxi va to'lovni menejer buyurtmadan so'ng siz bilan kelishadi.",
+  uz:{tagline:"Toshkentda krossovkalar",search:"Qidiruv: model yoki brend",all:"Hammasi",loading:"Katalog yuklanmoqda…",loadErr:"Katalogni yuklab bo'lmadi.",retry:"Qayta urinish",soldOut:"Ba'zi o'lchamlar sotilib bo'lgan — savat yangilandi.",nothing:"Hech narsa topilmadi",home:"Bosh sahifa",cart:"Savat",contact:"Yozish",back:"Orqaga",sizes:"Mavjud o'lchamlar",pay:"To'lov",phone:"Telefon",pickSize:"O'lchamni tanlang",add:"Savatga",added:"Qo'shildi",toCart:"Savatga →",size:"O'lcham",empty:"Savat bo'sh",emptySub:"Xit savdoni ko'ring — eng ommabop modellar o'sha yerda",toCatalog:"Katalogga o'tish",total:"Jami",pcs:"dona",checkout:"Buyurtma berish",name:"Ism",confirm:"Buyurtmani tasdiqlash",fillHint:"Ism va telefonni kiriting",fillAddr:"Yetkazish manzilini kiriting",fillRegion:"Viloyatni tanlang",done:"Buyurtma qabul qilindi",orderNo:"Buyurtma №",doneSub:function(m, h){ return "Menejer @"+m+" buyurtma va o'lchamni tasdiqlash uchun siz bilan bog'lanadi."+(h?" Aloqadamiz: "+h.charAt(0).toLowerCase()+h.slice(1)+".":""); },writeManager:"Menejerga yozish",backHome:"Bosh sahifa",sum:"so'm",sendManager:"Buyurtmani menejerga yuborish",copied:"Buyurtma matni nusxalandi — uni chatga joylang",sending:"Yuborilmoqda…",sendErr:"Buyurtmani yuborib bo'lmadi. Internetni tekshirib, qayta urinib ko'ring.",sent:"Buyurtma menejerga yuborildi",
+      delivery:"Qabul qilish",pickup:"Olib ketish",pickupSub:"Toshkentdagi do'kondan",deliv:"Toshkent bo'ylab yetkazish",delivSub:"Faqat shahar bo'ylab",bts:"Viloyatga BTS orqali",btsSub:"O'zbekiston bo'ylab yetkazish",
+      region:"Viloyat",pickRegion:"Viloyatni tanlang",address:"Yetkazish manzili",btsAddr:"Shahar va manzil yoki BTS bo'limi",noDeliv:function(z){ return z+" — yetkazib berilmaydi. Buyurtmani do'kondan olib keting."; },btsNote:"Yetkazish narxi va to'lovni menejer buyurtmadan so'ng siz bilan kelishadi.",
       hits:"Xit savdo",hitsSub:"So'nggi oyda eng ko'p sotilgan modellar",sale:"Chegirmalar",saleTitle:function(n){ return "<b>−"+n+"%</b> gacha<br>chegirma"; },saleSub:function(n){ return n+" ta model arzon narxda"; },
       fresh:"Yangiliklar",freshTitle:"Yangi kelganlar",freshSub:"So'nggi ikki haftadagi yangi juftliklar",storeTitle:"Toshkentdagi do'kon",storeSub:"Olib ketish · yetkazish · viloyatlarga BTS",see:"Ko'rish",
       bHit:"Xit",bNew:"Yangi",last:"Oxirgi juftlik",soldN:function(n){ return "Oxirgi oyda "+n+" juft sotib olindi"; },save:"Foyda",similar:"O'xshash modellar",legend:"o'lchamning oxirgi juftligi",
@@ -358,12 +358,12 @@ var STR = {
 };
 
 var S = { partial:false, incomplete:false, total:0, screen:"home", lang:"ru", theme:"auto", cat:"all", sort:"new", q:"", limit:20, sel:null, size:null, gi:0, bi:0, loading:true, loadErr:false, added:false, cart:[],
-          delivery:"pickup", zone:"tash", region:"", name:"", phone:"", addr:"", order:null, sending:false, err:"", storeFrom:"home" };
+          delivery:"pickup", region:"", name:"", phone:"", addr:"", order:null, sending:false, err:"", storeFrom:"home" };
 /* разовые флаги анимаций — сбрасываются после каждой отрисовки */
 var FX = {};
 
 /* ===== Сохранение корзины и контактов между запусками ===== */
-var SAVED = ["lang","theme","sort","cart","name","phone","addr","delivery","zone","region","order"];
+var SAVED = ["lang","theme","sort","cart","name","phone","addr","delivery","region","order"];
 var stored = null;
 try { stored = JSON.parse(localStorage.getItem(STORE_KEY) || "null"); } catch(e){}
 if (stored) SAVED.forEach(function(k){ if (stored[k] != null) S[k] = stored[k]; });
@@ -413,14 +413,23 @@ if(inTg && tg.onEvent) tg.onEvent("themeChanged", followSystem);
 if(lightMq){ if(lightMq.addEventListener) lightMq.addEventListener("change", followSystem); else if(lightMq.addListener) lightMq.addListener(followSystem); }
 applyTheme(false);
 
+function setShop(s){
+  if(s.manager) MANAGER=s.manager;
+  ["phone","address","landmark","hours"].forEach(function(k){ if(s[k]) SHOP[k]=s[k]; });
+  SHOP.coords = s.coords || null;
+}
+/* курьер — только если есть зона, куда возим; BTS — если включён в админке */
+function canDeliv(){ return !ZONES.length || ZONES.some(function(z){ return !z.red; }); }
 /* full — полный свежий каталог с сервера; кэш и первая порция корзину не трогают */
 function setCatalog(j, full){
   PRODUCTS = j.products||[]; byId = {}; PRODUCTS.forEach(function(p){ byId[p.id] = p; });
   S.partial = !!(j.partial || j.incomplete); S.incomplete = !!j.incomplete; S.total = j.total || PRODUCTS.length;
   THUMBS = !!j.thumbs && !thumbsFailed;
   if(j.zones) ZONES=j.zones; if(j.regions) REGIONS=j.regions;
+  if(j.shop) setShop(j.shop);
+  if((S.delivery==="deliv" && !canDeliv()) || (S.delivery==="bts" && j.regions && !REGIONS.length)) S.delivery="pickup";
   COL = S.partial ? {hit:[], sale:[], fresh:[]} : { // подборки — только по полному каталогу
-    hit: PRODUCTS.filter(function(p){ return p.hit; }).sort(function(a,b){ return b.sold-a.sold; }),
+    hit: PRODUCTS.filter(function(p){ return p.hit; }).sort(function(a,b){ return (b.sold||0)-(a.sold||0); }), // хит можно поставить вручную — тогда продаж может не быть
     sale: PRODUCTS.filter(function(p){ return p.off>0; }).sort(function(a,b){ return (!!b.imgs.length-!!a.imgs.length) || b.off-a.off; }),
     fresh: PRODUCTS.filter(function(p){ return p.fresh; })
   };
@@ -485,9 +494,10 @@ var FLAME = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"
 var SHOE = '<svg width="92" height="58" viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-opacity="0.5" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M3 31 L8 19 Q10 16 13 17 L20 20 L27 11 Q29 9 31 11 L37 19 L52 23 Q61 25 61 31 Z"/><path d="M3 31 L61 31 L61 35 L3 35 Z"/><path d="M28 14 L32 17 M25 17 L29 20"/></svg>';
 function shoe(w){ return SHOE.replace('width="92" height="58"','width="'+w+'" height="'+Math.round(w*0.63)+'"'); }
 /* Миниатюры: фото BILLZ — JPEG до 1280px и в среднем ~120 КБ. На Vercel карточки берут WebP 640px через /_vercel/image
-   (настройка images в vercel.json; сервер сообщает thumbs:true). Не вышло (например, исчерпан лимит) — оригиналы. */
-var THUMBS = false, thumbsFailed = false;
-function thumb(src){ return THUMBS && src.indexOf("https://fra1.digitaloceanspaces.com/")===0 ? API+"/_vercel/image?url="+encodeURIComponent(src).replace(/['()]/g,escape)+"&w=640&q=70" : src; }
+   (настройка images в vercel.json; сервер сообщает thumbs:true) — и для фото BILLZ, и для загруженных в админке (Vercel Blob).
+   Не вышло (например, исчерпан лимит) — оригиналы. */
+var THUMBS = false, thumbsFailed = false, THUMB_RE = /^https:\/\/(fra1\.digitaloceanspaces\.com\/|[a-z0-9]+\.public\.blob\.vercel-storage\.com\/ntkross\/)/;
+function thumb(src){ return THUMBS && THUMB_RE.test(src) ? API+"/_vercel/image?url="+encodeURIComponent(src).replace(/['()]/g,escape)+"&w=640&q=70" : src; }
 /* фото проявляется после загрузки; уже загруженные не мигают при перерисовке.
    small — миниатюра (карточки, баннеры, корзина); eager — первые карточки на экране грузятся сразу и в первую очередь */
 var LOADED = {};
@@ -695,18 +705,18 @@ var screens = {
       (ci.count ? '<div class="foot"><div class="row" style="align-items:baseline"><span class="muted" style="font-size:14px">'+t.total+' · '+ci.count+' '+t.pcs+'</span><span class="disp" style="font-size:20px">'+fmt(ci.total)+'</span></div><button class="big" data-a="go" data-v="checkout">'+t.checkout+ico(I.arrow,18)+'</button></div>' : nav("cart"));
   },
   checkout: function(){
-    var t=L(), ci=cartInfo(), ok=canConfirm(), z=zoneOf();
+    var t=L(), ci=cartInfo(), ok=canConfirm();
+    var red=ZONES.filter(function(z){ return z.red; }).map(function(z){ return z[S.lang]||z.ru; }); // куда не доставляем
     function opt(v, title, sub, icon){
       return '<button class="opt dlv'+(S.delivery===v?" on":"")+(FX.deliv===v?" just":"")+'" data-a="deliv" data-v="'+v+'"><span class="dot"></span>'+
         '<span class="col" style="flex:1;gap:2px;min-width:0"><span>'+title+'</span><span class="muted xs" style="font-weight:500">'+sub+'</span></span>'+ico(icon,20,' style="color:var(--muted);flex-shrink:0"')+'</button>';
     }
     function select(f, list, cur, placeholder){
       return '<select data-f="'+f+'">'+(placeholder?'<option value="" disabled'+(cur?'':' selected')+'>'+placeholder+'</option>':'')+
-        list.map(function(x){ return '<option value="'+esc(x.id)+'"'+(cur===x.id?" selected":"")+'>'+esc(x[S.lang]||x.ru)+(x.red?" 🔴":"")+'</option>'; }).join("")+'</select>';
+        list.map(function(x){ return '<option value="'+esc(x.id)+'"'+(cur===x.id?" selected":"")+'>'+esc(x[S.lang]||x.ru)+'</option>'; }).join("")+'</select>';
     }
     var place = S.delivery==="deliv" ?
-        (ZONES.length ? '<label class="field">'+t.zone+select("zone",ZONES,S.zone)+'</label>' : '')+
-        (z && z.red ? '<div class="note red">'+ico(I.alert,18)+'<span>'+t.redZone+'</span></div>' : '')+
+        (red.length ? '<div class="note red">'+ico(I.alert,18)+'<span>'+esc(t.noDeliv(red.join(", ")))+'</span></div>' : '')+
         '<label class="field">'+t.address+'<input data-f="addr" value="'+esc(S.addr)+'" autocomplete="street-address"></label>' :
       S.delivery==="bts" ?
         '<label class="field">'+t.region+select("region",REGIONS,S.region,t.pickRegion)+'</label>'+
@@ -718,7 +728,7 @@ var screens = {
         '<div class="col" style="gap:10px"><label class="field">'+t.name+'<input data-f="name" value="'+esc(S.name)+'" autocomplete="given-name"></label>'+
         '<label class="field">'+t.phone+'<input data-f="phone" value="'+esc(S.phone)+'" inputmode="tel" placeholder="+998" autocomplete="tel"></label></div>'+
         '<div class="col" style="gap:8px"><div style="font-size:14px;font-weight:700">'+t.delivery+'</div>'+
-          opt("pickup",t.pickup,t.pickupSub,I.store)+opt("deliv",t.deliv,t.delivSub,I.truck)+(REGIONS.length?opt("bts",t.bts,t.btsSub,I.route):'')+place+'</div>'+
+          opt("pickup",t.pickup,t.pickupSub,I.store)+(canDeliv()?opt("deliv",t.deliv,t.delivSub,I.truck):'')+(REGIONS.length?opt("bts",t.bts,t.btsSub,I.route):'')+place+'</div>'+
         summary(ci)+
       '</div><div class="foot">'+(S.err?'<div class="err" role="alert">'+t.sendErr+'</div>':'')+
         '<div id="hint" class="muted xs" style="text-align:center;'+(ok?"display:none":"")+'">'+hintText()+'</div>'+
@@ -732,7 +742,7 @@ var screens = {
     return '<div class="scroll pad col" data-keep="main" style="align-items:center;justify-content:center;gap:16px;text-align:center;padding-top:24px;padding-bottom:24px">'+
       '<div class="dic ok">'+ico(I.check,42,' stroke-width="2.6"')+'</div>'+
       '<div class="col dtx" style="align-items:center;gap:10px;width:100%"><div class="disp" style="font-size:24px">'+t.done+'</div><div class="muted" style="font-size:14px">'+t.orderNo+' '+esc(o.no)+'</div>'+
-      '<div style="font-size:15px;line-height:1.5;max-width:300px">'+t.doneSub+'</div>'+
+      '<div style="font-size:15px;line-height:1.5;max-width:300px">'+esc(t.doneSub(MANAGER, tr(SHOP.hours)))+'</div>'+
       (o.items.length?'<div style="width:100%;text-align:left;margin-top:6px">'+itemsBox(o)+'</div>':'')+'</div>'+
       '</div><div class="foot">'+foot+'<button class="big ghost" data-a="restart">'+t.backHome+'</button></div>';
   },
@@ -777,12 +787,11 @@ function itemsBox(o){
     '<div class="row"><span class="muted">'+t.getL+'</span><span style="font-weight:600;text-align:right">'+esc(deliveryText(o, S.lang))+'</span></div></div>';
 }
 /* ===== Получение ===== */
-function zoneOf(){ return ZONES.filter(function(z){ return z.id===S.zone; })[0] || ZONES[0]; }
 function nameOf(list, id, lang){ var x=list.filter(function(v){ return v.id===id; })[0]; return x ? x[lang]||x.ru : ""; }
-/* «Доставка по Ташкенту · Чирчик», «В регион через BTS · Самаркандская область» */
+/* «Доставка по Ташкенту», «В регион через BTS · Самаркандская область» */
 function deliveryText(o, lang){
   var t=STR[lang];
-  return o.delivery==="deliv" ? t.deliv+(o.zone?" · "+nameOf(ZONES,o.zone,lang):"") : o.delivery==="bts" ? t.bts+" · "+nameOf(REGIONS,o.region,lang) : t.pickup;
+  return o.delivery==="deliv" ? t.deliv : o.delivery==="bts" ? t.bts+" · "+nameOf(REGIONS,o.region,lang) : t.pickup;
 }
 /* чего не хватает для заказа (пусто — всё заполнено) */
 function hintText(){
@@ -843,16 +852,15 @@ function buildOrder(){
     lang:S.lang,
     items:ci.lines.map(function(l){ return {id:l.p.id,bc:l.p.bc[l.x.size],name:l.p.name,size:l.x.size,qty:l.x.qty,sum:l.price*l.x.qty}; }),
     total:ci.total, name:S.name.trim(), phone:S.phone.trim(), delivery:S.delivery,
-    zone:S.delivery==="deliv"?S.zone:"", region:S.delivery==="bts"?S.region:"", addr:S.delivery==="pickup"?"":S.addr.trim(),
+    region:S.delivery==="bts"?S.region:"", addr:S.delivery==="pickup"?"":S.addr.trim(),
     initData:tg?tg.initData||"":""
   };
 }
 /* Заказ в виде текста — для чата с менеджером (всегда по-русски) */
 function orderText(o){
-  var z=o.delivery==="deliv" && ZONES.filter(function(x){ return x.id===o.zone; })[0];
   return ["Новый заказ №"+o.no].concat(
     o.items.map(function(i){ return "• "+i.name+" · размер "+i.size+" × "+i.qty+" — "+num(i.sum)+" сум"; }),
-    ["Итого: "+num(o.total)+" сум", "Клиент: "+o.name, "Телефон: "+o.phone, "Получение: "+deliveryText(o,"ru")+(z && z.red ? " (красная зона)" : "")],
+    ["Итого: "+num(o.total)+" сум", "Клиент: "+o.name, "Телефон: "+o.phone, "Получение: "+deliveryText(o,"ru")],
     o.addr ? ["Адрес: "+o.addr] : []
   ).join("\n");
 }
@@ -873,7 +881,7 @@ function openManager(){
 function finishOrder(res, o){
   S.order={no:res.no, total:res.total, sent:!!res.notified,
     items:o.items.map(function(i){ return {name:i.name,size:i.size,qty:i.qty,sum:i.sum}; }),
-    name:o.name, phone:o.phone, delivery:o.delivery, zone:o.zone, region:o.region, addr:o.addr};
+    name:o.name, phone:o.phone, delivery:o.delivery, region:o.region, addr:o.addr};
   S.sending=false; S.err=""; S.cart=[]; S.screen="done";
   hap("ok");
 }
@@ -953,7 +961,6 @@ app.addEventListener("input", function(e){
   if(f==="q") S.limit=PAGE_N;
   if(f==="q") updateGrid();
   var btn=document.getElementById("confirm");
-  if(f==="zone" || f==="region"){ render(); return; }
   if(btn){ var ok=canConfirm(), h=document.getElementById("hint"); btn.disabled=!ok; h.textContent=hintText(); h.style.display=ok?"none":""; }
 });
 /* фото проявляются по загрузке; битые прячем */

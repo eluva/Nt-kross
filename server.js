@@ -1,5 +1,5 @@
 /* NT Kross — локальный сервер для разработки (на Vercel вместо него работают api/*.js).
-   Отдаёт public/ и те же /api/catalog, /api/order и /api/staffbot.
+   Отдаёт public/ и те же /api/catalog, /api/order, /api/staffbot и /api/admin (админка — /admin.html).
    STAFF_BOT_POLL=1 — бот сотрудников забирает сообщения сам (до localhost вебхук Telegram не дойдёт).
    Запуск: node server.js  (Node 18+, без зависимостей) */
 "use strict";
@@ -10,6 +10,7 @@ process.env.ORDERS_LOG = process.env.ORDERS_LOG || path.join(__dirname, "orders.
 const zlib = require("zlib");
 const { getCatalog, catalogBody, placeOrder } = require("./lib/core");
 const staff = require("./lib/staff");
+const admin = require("./lib/admin");
 
 const PORT = +process.env.PORT || 3000;
 const PUBLIC = path.join(__dirname, "public");
@@ -26,10 +27,10 @@ function sendGzip(req, res, body) {
   res.writeHead(200, { "Content-Type": "application/json; charset=utf-8", "Content-Encoding": "gzip", "Cache-Control": "no-store" });
   res.end(zlib.gzipSync(buf));
 }
-function readBody(req) {
+function readBody(req, max = 64e3) {
   return new Promise((ok, fail) => {
     let size = 0; const chunks = [];
-    req.on("data", c => { size += c.length; if (size > 64e3) { fail(new Error("too large")); req.destroy(); } else chunks.push(c); });
+    req.on("data", c => { size += c.length; if (size > max) { fail(new Error("too large")); req.destroy(); } else chunks.push(c); });
     req.on("end", () => ok(Buffer.concat(chunks).toString("utf8")));
     req.on("error", fail);
   });
@@ -46,6 +47,18 @@ const server = http.createServer(async (req, res) => {
       try { body = JSON.parse(await readBody(req)); } catch { return send(res, 400, { error: "json" }); }
       const [code, out] = await placeOrder(body || {}, req.socket.remoteAddress || "");
       return send(res, code, out);
+    }
+    if (url.pathname === "/api/admin") {
+      let body = {};
+      if (req.method === "POST") { try { body = JSON.parse(await readBody(req, 5e6)) || {}; } catch { return send(res, 400, { error: "json" }); } } // фото — до ~4 МБ
+      const [code, out] = await admin.handle(req.method, body, req.headers, req.socket.remoteAddress || "");
+      return send(res, code, out);
+    }
+    if (url.pathname.startsWith("/uploads/") && req.method === "GET") { // фото из админки (на Vercel они в Vercel Blob)
+      const file = path.join(admin.UPLOADS, path.basename(url.pathname));
+      const type = TYPES[path.extname(file).toLowerCase()];
+      if (type && fs.existsSync(file)) return send(res, 200, fs.readFileSync(file), type);
+      return send(res, 404, { error: "not found" });
     }
     if (url.pathname === "/api/staffbot" && req.method === "POST") {
       if (!staff.validSecret(req.headers["x-telegram-bot-api-secret-token"])) return send(res, 401, { error: "secret" });
