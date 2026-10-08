@@ -1,13 +1,15 @@
 /* Vercel: GET /api/catalog — каталог в наличии из BILLZ (?limit=N — только первые N моделей).
-   CDN держит ответ минуту (чтобы правки из админки появлялись быстро) и ещё сутки отдаёт старый, пока обновляется новый.
+   ?v=<версия> — приложение пришло за конкретной версией (узнало её из /api/version): такой ответ CDN держит 10 минут,
+   все покупатели берут его из кэша. Без v — при запуске приложения: CDN держит 5 с и, пока обновляет, отдаёт прежний —
+   через несколько секунд /api/version всё равно сообщит, если что-то поменялось.
    Неполный каталог (идёт первый полный проход) и снимок без последних изменений не кэшируем — приложение спросит ещё раз. */
 const { catalogBody } = require("../lib/core");
 
 module.exports = async (req, res) => {
   if (req.method !== "GET") return res.status(405).json({ error: "method" });
   try {
-    const body = await catalogBody(req.query && req.query.limit);
-    res.setHeader("Cache-Control", body.incomplete || body.stale ? "no-store" : "public, s-maxage=60, stale-while-revalidate=86400");
+    const q = req.query || {}, body = await catalogBody(q.limit);
+    res.setHeader("Cache-Control", body.incomplete || body.stale ? "no-store" : q.v ? "public, s-maxage=600" : "public, s-maxage=5, stale-while-revalidate=300");
     res.status(200).json(body);
   } catch (e) {
     console.error("catalog:", e.message);

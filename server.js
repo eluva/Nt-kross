@@ -1,5 +1,5 @@
 /* NT Kross — локальный сервер для разработки (на Vercel вместо него работают api/*.js).
-   Отдаёт public/ и те же /api/catalog, /api/order, /api/staffbot и /api/admin (админка — /admin.html).
+   Отдаёт public/ и те же /api/catalog, /api/version, /api/order, /api/staffbot и /api/admin (админка — /admin.html).
    STAFF_BOT_POLL=1 — бот сотрудников забирает сообщения сам (до localhost вебхук Telegram не дойдёт).
    Запуск: node server.js  (Node 18+, без зависимостей) */
 "use strict";
@@ -8,7 +8,7 @@ const fs = require("fs");
 const path = require("path");
 process.env.ORDERS_LOG = process.env.ORDERS_LOG || path.join(__dirname, "orders.jsonl");
 const zlib = require("zlib");
-const { getCatalog, catalogBody, placeOrder } = require("./lib/core");
+const { getCatalog, catalogBody, catalogVersion, placeOrder } = require("./lib/core");
 const staff = require("./lib/staff");
 const admin = require("./lib/admin");
 
@@ -41,6 +41,9 @@ const server = http.createServer(async (req, res) => {
   try {
     if (url.pathname === "/api/catalog" && req.method === "GET") {
       try { return sendGzip(req, res, await catalogBody(url.searchParams.get("limit"))); } catch { return send(res, 503, { error: "catalog" }); }
+    }
+    if (url.pathname === "/api/version" && req.method === "GET") {
+      try { return send(res, 200, await catalogVersion()); } catch { return send(res, 503, { error: "catalog" }); }
     }
     if (url.pathname === "/api/order" && req.method === "POST") {
       let body;

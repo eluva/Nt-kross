@@ -423,6 +423,7 @@ function canDeliv(){ return !ZONES.length || ZONES.some(function(z){ return !z.r
 /* full — полный свежий каталог с сервера; кэш и первая порция корзину не трогают */
 function setCatalog(j, full){
   PRODUCTS = j.products||[]; byId = {}; PRODUCTS.forEach(function(p){ byId[p.id] = p; });
+  if(j.v && !j.partial) CAT_V = j.v;
   S.partial = !!(j.partial || j.incomplete); S.incomplete = !!j.incomplete; S.total = j.total || PRODUCTS.length;
   THUMBS = !!j.thumbs && !thumbsFailed;
   if(j.zones) ZONES=j.zones; if(j.regions) REGIONS=j.regions;
@@ -471,6 +472,33 @@ function loadCatalog(){
     function(){ S.loading=false; if(!PRODUCTS.length) S.loadErr=true; else if(S.partial) catRetry=setTimeout(loadCatalog, 5000); }) // на экране только первая порция — пробуем ещё
     .then(render);
 }
+/* ===== Живое обновление =====
+   Пока приложение открыто, раз в 10 с спрашиваем версию витрины (/api/version — крошечный ответ; сервер при этом
+   сам подтягивает изменения из BILLZ). Поменялась — берём новый каталог: проданные пары исчезают, корзина
+   сокращается, покупатель видит предупреждение. Пока покупатель печатает, экран не перерисовываем. */
+var CAT_V = "", LIVE_MS = 10e3, liveBusy = false;
+function liveCheck(){
+  if(document.hidden || liveBusy || S.sending || !PRODUCTS.length || S.partial) return;
+  liveBusy = true;
+  getJSON(API+"/api/version").then(function(j){
+    if(!j.v || j.v===CAT_V || j.incomplete || j.stale) return;
+    return getJSON(API+"/api/catalog?v="+encodeURIComponent(j.v)).then(liveApply);
+  }).catch(function(){}).then(function(){ liveBusy = false; });
+}
+function liveApply(j){
+  if(j.incomplete || j.stale || j.partial || S.sending) return;
+  var before = JSON.stringify(S.cart);
+  setCatalog(j, true); writeCatCache(j);
+  if(S.screen==="product" && S.size && !(byId[S.sel].qty[S.size]>0)){ S.size=null; S.added=false; } // выбранный размер только что купили
+  var lost = before!==JSON.stringify(S.cart);
+  if(lost) toast(L().soldOut);
+  var a = document.activeElement, typing = a && a.tagName==="INPUT" && app.contains(a);
+  if(typing && !lost){ if(S.screen==="home") updateGrid(); return; }
+  render();
+}
+setInterval(liveCheck, LIVE_MS);
+document.addEventListener("visibilitychange", function(){ if(!document.hidden) liveCheck(); });
+
 function L(){ return STR[S.lang]; }
 function num(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g," "); }
 function fmt(n){ return num(n) + " " + L().sum; }
